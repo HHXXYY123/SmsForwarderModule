@@ -37,7 +37,7 @@ class PushWorker(appContext: Context, workerParams: WorkerParameters) :
         val body = json.toString().toRequestBody(mediaType)
 
         val request = Request.Builder()
-            .url("http://www.pushplus.plus/send")
+            .url("https://www.pushplus.plus/send")
             .post(body)
             .build()
 
