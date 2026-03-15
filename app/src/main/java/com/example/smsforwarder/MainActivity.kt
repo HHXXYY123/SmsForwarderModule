@@ -49,21 +49,40 @@ class MainActivity : AppCompatActivity() {
 
         // Check permissions
         checkPermissions()
+        
+        // 尝试恢复服务状态，如果崩溃则自动关闭
+        if (isEnabled) {
+            try {
+                startMonitorService()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Config.setEnabled(this, false)
+                switchService.isChecked = false
+                updateServiceStatus(false)
+                Toast.makeText(this, "服务启动失败，已自动关闭: ${e.message}", Toast.LENGTH_LONG).show()
+            }
+        }
 
         btnSave.setOnClickListener {
             val token = etToken.text.toString().trim()
             if (token.isEmpty()) {
-                Toast.makeText(this, "Token cannot be empty", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Token 不能为空", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             Config.setToken(this, token)
-            Toast.makeText(this, "Config Saved", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "配置已保存", Toast.LENGTH_SHORT).show()
         }
 
         switchService.setOnCheckedChangeListener { _, isChecked ->
             Config.setEnabled(this, isChecked)
             if (isChecked) {
-                startMonitorService()
+                try {
+                    startMonitorService()
+                } catch (e: Exception) {
+                    switchService.isChecked = false
+                    Config.setEnabled(this, false)
+                    Toast.makeText(this, "启动失败: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
             } else {
                 stopMonitorService()
             }
@@ -73,13 +92,13 @@ class MainActivity : AppCompatActivity() {
         btnTest.setOnClickListener {
             val token = Config.getToken(this)
             if (token.isNullOrEmpty()) {
-                Toast.makeText(this, "Save token first", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "请先保存 Token", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             
             val data = Data.Builder()
-                .putString("title", "Test Message")
-                .putString("content", "This is a test message from SMS Forwarder")
+                .putString("title", "测试消息")
+                .putString("content", "这是一条来自短信转发助手的测试消息")
                 .build()
 
             val request = OneTimeWorkRequestBuilder<PushWorker>()
@@ -87,7 +106,7 @@ class MainActivity : AppCompatActivity() {
                 .build()
 
             WorkManager.getInstance(this).enqueue(request)
-            Toast.makeText(this, "Test Push Sent", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "测试推送已发送", Toast.LENGTH_SHORT).show()
         }
 
         btnBattery.setOnClickListener {
@@ -147,7 +166,7 @@ class MainActivity : AppCompatActivity() {
                 intent.data = Uri.parse("package:$packageName")
                 startActivity(intent)
             } else {
-                Toast.makeText(this, "Already ignoring battery optimizations", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "已加入电池优化白名单", Toast.LENGTH_SHORT).show()
             }
         }
     }
