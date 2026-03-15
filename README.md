@@ -1,38 +1,38 @@
-# SMS Forwarder to WeChat (PushPlus)
+# KernelSU 短信转发模块 (SmsForwarder to WeChat)
 
-This is a KernelSU/Magisk module that installs an Android system app to forward SMS messages from a rooted Android device to WeChat via the PushPlus API.
+这是一个 KernelSU/Magisk 模块，通过安装一个系统应用，将已 Root 的 Android 设备收到的短信自动转发到微信（通过 PushPlus API）。
 
-## Features
-- **Automatic Forwarding**: Listens for incoming SMS and forwards them instantly.
-- **PushPlus Integration**: Uses PushPlus API for reliable WeChat notifications.
-- **Background Service**: Includes a foreground service to keep the process alive.
-- **Battery Optimization**: Automatically requests to ignore battery optimizations and uses `dumpsys` whitelist via root.
-- **Boot Start**: Automatically starts on device boot.
-- **Retry Mechanism**: Uses Android WorkManager for reliable delivery and retries on network failure.
-- **Configuration UI**: Simple app interface to set your PushPlus token and test the connection.
+## 核心功能
+- **自动转发**: 实时监听并秒级转发接收到的短信。
+- **微信推送**: 集成 PushPlus API，确保推送到微信。
+- **后台保活**: 包含前台服务通知，防止进程被杀。
+- **电量优化**: 自动申请忽略电池优化，并利用 Root 权限将应用加入系统白名单。
+- **开机自启**: 设备重启后自动启动服务。
+- **重试机制**: 使用 Android WorkManager，网络故障时自动进入重试队列。
+- **配置界面**: 提供简洁的 App 界面用于设置 PushPlus Token 和测试推送。
 
-## Requirements
+## 环境要求
 - Android 8.0+ (SDK 26+)
-- Rooted with KernelSU or Magisk
-- Internet connection
+- 已安装 KernelSU 或 Magisk 的 Root 环境
+- 互联网连接
 
-## Installation
-1. Download the module zip (or build it yourself, see INSTALL.md).
-2. Open KernelSU/Magisk Manager.
-3. Go to "Modules" -> "Install from storage".
-4. Select the zip file.
-5. Reboot.
+## 安装说明
+1. 下载模块 ZIP 包（或自行编译，详见 [INSTALL.md](INSTALL.md)）。
+2. 打开 KernelSU 或 Magisk 管理器。
+3. 进入 "模块" -> "从本地安装"。
+4. 选择 ZIP 文件刷入。
+5. 重启手机。
 
-## Configuration
-1. After reboot, open the "SMS Forwarder" app from your launcher.
-2. Grant the required permissions (SMS, Notification).
-3. Enter your PushPlus Token (get it from [http://www.pushplus.plus/](http://www.pushplus.plus/)).
-4. Click "Save Configuration".
-5. Toggle "Enable Monitoring Service".
-6. Click "Test Push" to verify.
-7. Click "Request Ignore Battery Optimization" to ensure the app is not killed by the system.
+## 配置指南
+1. 重启后，在桌面上打开 "SMS Forwarder" 应用。
+2. 授予必要的权限（短信、通知）。
+3. 输入您的 PushPlus Token (获取地址: [http://www.pushplus.plus/](http://www.pushplus.plus/))。
+4. 点击 "Save Configuration" 保存。
+5. 开启 "Enable Monitoring Service" 开关。
+6. 点击 "Test Push" 测试是否能收到微信通知。
+7. 点击 "Request Ignore Battery Optimization" 确保应用不会被系统休眠。
 
-## Troubleshooting
-- If messages are not sent, check the "Last Log" in the app.
-- Ensure the "Monitoring SMS..." notification is visible.
-- Check your internet connection.
+## 常见问题
+- 如果无法发送，请查看 App 内的 "Last Log"。
+- 确保通知栏中有 "Monitoring SMS..." 的常驻通知。
+- 检查网络连接是否正常。

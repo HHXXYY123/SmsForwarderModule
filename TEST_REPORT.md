@@ -1,33 +1,33 @@
-# Test Report: SMS Forwarder Module
+# 测试报告：短信转发模块 (SMS Forwarder Module)
 
-## Test Environment
-- Device: Google Pixel 4
-- OS: Android 13
-- Root: KernelSU v0.9.5 / Magisk v27.0
-- Network: Wi-Fi / 4G LTE
+## 测试环境
+- 设备型号: Google Pixel 4
+- 操作系统: Android 13
+- Root环境: KernelSU v0.9.5 / Magisk v27.0
+- 网络环境: Wi-Fi / 4G LTE
 
-## Test Cases
+## 测试用例
 
-### 1. Functional Testing
-| Test Case | Description | Expected Result | Actual Result |
+### 1. 功能测试
+| 测试项 | 描述 | 预期结果 | 实际结果 |
 | :--- | :--- | :--- | :--- |
-| **SMS Reception** | Send SMS to device | App logs "Received SMS" | Pass |
-| **PushPlus API** | Configure valid token | Push notification received on WeChat | Pass |
-| **Invalid Token** | Configure invalid token | App logs error, no crash | Pass |
-| **Service Toggle** | Enable/Disable service | Notification appears/disappears | Pass |
-| **Boot Start** | Reboot device | Service starts automatically within 1 min | Pass |
+| **短信接收** | 向设备发送短信 | App 日志显示 "Received SMS" | 通过 |
+| **PushPlus API** | 配置有效 Token | 微信收到推送通知 | 通过 |
+| **无效 Token** | 配置无效/空 Token | App 记录错误日志，不崩溃 | 通过 |
+| **服务开关** | 开启/关闭服务 | 通知栏图标出现/消失 | 通过 |
+| **开机自启** | 重启手机 | 1分钟内自动启动后台服务 | 通过 |
 
-### 2. Reliability Testing
-| Test Case | Description | Result |
+### 2. 可靠性测试
+| 测试项 | 描述 | 结果 |
 | :--- | :--- | :--- |
-| **Network Failure** | Airplane mode on, send SMS | WorkManager retries when network restored | Pass |
-| **Process Kill** | Force stop app | Service restarts via `service.sh` on next boot | Pass |
-| **Battery Opt** | Check whitelist status | App is whitelisted via `dumpsys` | Pass |
+| **断网重试** | 开启飞行模式收短信，随后关闭飞行模式 | 网络恢复后 WorkManager 自动重发 | 通过 |
+| **进程被杀** | 强制停止应用 | `service.sh` 确保下次启动恢复，或通过广播自启 | 通过 |
+| **电池优化** | 检查系统白名单 | `dumpsys` 显示应用已在白名单中 | 通过 |
 
-### 3. Performance Metrics
-- **Memory Usage**: ~35MB average (Foreground Service).
-- **Battery Consumption**: <1% over 24h (Idle with 10 SMS).
-- **Success Rate**: 100% for 50 test messages.
+### 3. 性能指标
+- **内存占用**: 平均约 35MB (前台服务常驻时)。
+- **电池消耗**: <1% / 24小时 (待机状态，日均10条短信)。
+- **转发成功率**: 100% (基于50条测试短信)。
 
-## Conclusion
-The module meets all functional requirements. The use of Foreground Service and Boot Receiver ensures high availability. WorkManager provides reliable delivery even with network interruptions.
+## 结论
+本模块满足所有核心功能需求。采用前台服务 (Foreground Service) 和开机广播 (Boot Receiver) 确保了高可用性。WorkManager 机制保证了在网络不稳定情况下的消息送达率。
