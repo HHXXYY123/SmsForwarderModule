@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">SMS Forwarder</string>
+    <string name="pushplus_token_label">PushPlus Token</string>
+    <string name="pushplus_token_hint">Enter your PushPlus token here</string>
+    <string name="save_config">Save Configuration</string>
+    <string name="test_push">Test Push</string>
+    <string name="enable_service">Enable Monitoring Service</string>
+    <string name="service_status_running">Status: Running</string>
+    <string name="service_status_stopped">Status: Stopped</string>
+    <string name="request_battery_opt">Request Ignore Battery Optimization</string>
+    <string name="last_log">Last Log:</string>
+</resources>

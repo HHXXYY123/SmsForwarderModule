@@ -1,0 +1,6 @@
+id=sms-forwarder-pushplus
+name=SMS Forwarder to WeChat (PushPlus)
+version=v1.0.0
+versionCode=100
+author=TraeAI
+description=Forwards SMS from rooted device to WeChat via PushPlus. Includes battery optimization whitelist.
