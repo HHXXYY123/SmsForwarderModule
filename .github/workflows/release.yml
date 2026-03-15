@@ -21,7 +21,7 @@ jobs:
       - name: Build APK with Gradle
         run: |
           chmod +x gradlew
-          ./gradlew :app:assembleDebug
+          gradle :app:assembleDebug
 
       - name: Prepare Module Files
         run: |
