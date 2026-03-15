@@ -9,6 +9,7 @@ import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import java.util.concurrent.TimeUnit
 
 class SmsReceiver : BroadcastReceiver() {
@@ -43,7 +44,7 @@ class SmsReceiver : BroadcastReceiver() {
                             .setInputData(data)
                             .setBackoffCriteria(
                                 BackoffPolicy.LINEAR,
-                                OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
+                                WorkRequest.MIN_BACKOFF_MILLIS,
                                 TimeUnit.MILLISECONDS
                             )
                             .build()
