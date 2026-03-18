@@ -1,6 +1,6 @@
 id=sms-forwarder-pushplus
 name=短信转发助手 (PushPlus)
-version=v1.0.0
-versionCode=100
+version=v1.1.0
+versionCode=110
 author=TraeAI
-description=将已 Root 备用机收到的短信自动转发到微信 (PushPlus)。包含后台保活与电量优化白名单。
+description=将已 Root 备用机收到的短信自动转发到微信 (PushPlus)。包含后台保活、电量优化与 ADB 网络调试(5555)。
