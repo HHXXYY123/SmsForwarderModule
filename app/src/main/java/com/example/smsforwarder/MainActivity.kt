@@ -24,6 +24,8 @@ import androidx.work.Data
 class MainActivity : AppCompatActivity() {
 
     private lateinit var etToken: EditText
+    private lateinit var etTitleTemplate: EditText
+    private lateinit var etContentTemplate: EditText
     private lateinit var switchService: Switch
     private lateinit var tvStatus: TextView
     private lateinit var tvLog: TextView
@@ -33,6 +35,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         etToken = findViewById(R.id.et_token)
+        etTitleTemplate = findViewById(R.id.et_title_template)
+        etContentTemplate = findViewById(R.id.et_content_template)
         switchService = findViewById(R.id.switch_service)
         tvStatus = findViewById(R.id.tv_status)
         tvLog = findViewById(R.id.tv_log)
@@ -42,6 +46,8 @@ class MainActivity : AppCompatActivity() {
 
         // Load config
         etToken.setText(Config.getToken(this))
+        etTitleTemplate.setText(Config.getTitleTemplate(this))
+        etContentTemplate.setText(Config.getContentTemplate(this))
         val isEnabled = Config.isEnabled(this)
         switchService.isChecked = isEnabled
         updateServiceStatus(isEnabled)
@@ -65,11 +71,21 @@ class MainActivity : AppCompatActivity() {
 
         btnSave.setOnClickListener {
             val token = etToken.text.toString().trim()
+            val titleTemplate = etTitleTemplate.text.toString().trim()
+            val contentTemplate = etContentTemplate.text.toString().trim()
+            
             if (token.isEmpty()) {
                 Toast.makeText(this, "Token 不能为空", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+            if (titleTemplate.isEmpty() || contentTemplate.isEmpty()) {
+                Toast.makeText(this, "模板不能为空", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            
             Config.setToken(this, token)
+            Config.setTitleTemplate(this, titleTemplate)
+            Config.setContentTemplate(this, contentTemplate)
             Toast.makeText(this, "配置已保存", Toast.LENGTH_SHORT).show()
         }
 

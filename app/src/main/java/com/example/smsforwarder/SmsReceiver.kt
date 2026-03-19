@@ -37,14 +37,26 @@ class SmsReceiver : BroadcastReceiver() {
                     if (pdus != null) {
                         for (pdu in pdus) {
                             val sms = SmsMessage.createFromPdu(pdu as ByteArray)
-                            val sender = sms.displayOriginatingAddress
-                            val messageBody = sms.displayMessageBody
+                            val sender = sms.displayOriginatingAddress ?: "未知发件人"
+                            val messageBody = sms.displayMessageBody ?: ""
                             val timestamp = sms.timestampMillis
                             
-                            val title = "SMS from $sender"
-                            val content = "Time: ${java.util.Date(timestamp)}\nFrom: $sender\n\n$messageBody"
+                            val timeStr = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date(timestamp))
                             
-                            Config.log(context, "Received SMS from $sender")
+                            val titleTemplate = Config.getTitleTemplate(context)
+                            val contentTemplate = Config.getContentTemplate(context)
+
+                            val title = titleTemplate
+                                .replace("{sender}", sender)
+                                .replace("{time}", timeStr)
+                                .replace("{content}", messageBody)
+                                
+                            val content = contentTemplate
+                                .replace("{sender}", sender)
+                                .replace("{time}", timeStr)
+                                .replace("{content}", messageBody)
+                            
+                            Config.log(context, "收到来自 $sender 的短信")
                             
                             val data = Data.Builder()
                                 .putString("title", title)

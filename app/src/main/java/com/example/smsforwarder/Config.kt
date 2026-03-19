@@ -8,6 +8,11 @@ object Config {
     private const val KEY_TOKEN = "pushplus_token"
     private const val KEY_ENABLED = "service_enabled"
     private const val KEY_LAST_LOG = "last_log"
+    private const val KEY_TITLE_TEMPLATE = "title_template"
+    private const val KEY_CONTENT_TEMPLATE = "content_template"
+
+    const val DEFAULT_TITLE_TEMPLATE = "短信转发：{sender}"
+    const val DEFAULT_CONTENT_TEMPLATE = "时间: {time}\n发件人: {sender}\n\n内容: {content}"
 
     fun getPrefs(context: Context): SharedPreferences {
         return context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
@@ -27,6 +32,22 @@ object Config {
 
     fun setEnabled(context: Context, enabled: Boolean) {
         getPrefs(context).edit().putBoolean(KEY_ENABLED, enabled).apply()
+    }
+
+    fun getTitleTemplate(context: Context): String {
+        return getPrefs(context).getString(KEY_TITLE_TEMPLATE, DEFAULT_TITLE_TEMPLATE) ?: DEFAULT_TITLE_TEMPLATE
+    }
+
+    fun setTitleTemplate(context: Context, template: String) {
+        getPrefs(context).edit().putString(KEY_TITLE_TEMPLATE, template).apply()
+    }
+
+    fun getContentTemplate(context: Context): String {
+        return getPrefs(context).getString(KEY_CONTENT_TEMPLATE, DEFAULT_CONTENT_TEMPLATE) ?: DEFAULT_CONTENT_TEMPLATE
+    }
+
+    fun setContentTemplate(context: Context, template: String) {
+        getPrefs(context).edit().putString(KEY_CONTENT_TEMPLATE, template).apply()
     }
 
     fun log(context: Context, message: String) {
