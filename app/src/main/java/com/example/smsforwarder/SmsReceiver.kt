@@ -3,11 +3,13 @@ package com.example.smsforwarder
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.PowerManager
 import android.telephony.SmsMessage
 import androidx.work.BackoffPolicy
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import java.util.concurrent.TimeUnit
@@ -20,37 +22,53 @@ class SmsReceiver : BroadcastReceiver() {
                 return
             }
 
-            val bundle = intent.extras
-            if (bundle != null) {
-                val pdus = bundle.get("pdus") as Array<Any>?
-                if (pdus != null) {
-                    for (pdu in pdus) {
-                        val sms = SmsMessage.createFromPdu(pdu as ByteArray)
-                        val sender = sms.displayOriginatingAddress
-                        val messageBody = sms.displayMessageBody
-                        val timestamp = sms.timestampMillis
-                        
-                        val title = "SMS from $sender"
-                        val content = "Time: ${java.util.Date(timestamp)}\nFrom: $sender\n\n$messageBody"
-                        
-                        Config.log(context, "Received SMS from $sender")
-                        
-                        val data = Data.Builder()
-                            .putString("title", title)
-                            .putString("content", content)
-                            .build()
+            // Acquire WakeLock to ensure CPU stays awake while we process the SMS and enqueue work
+            val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+            val wakeLock = powerManager.newWakeLock(
+                PowerManager.PARTIAL_WAKE_LOCK,
+                "SmsForwarder::ReceiverWakeLock"
+            )
+            wakeLock.acquire(10000) // Hold for max 10 seconds
 
-                        val uploadWorkRequest = OneTimeWorkRequestBuilder<PushWorker>()
-                            .setInputData(data)
-                            .setBackoffCriteria(
-                                BackoffPolicy.LINEAR,
-                                WorkRequest.MIN_BACKOFF_MILLIS,
-                                TimeUnit.MILLISECONDS
-                            )
-                            .build()
+            try {
+                val bundle = intent.extras
+                if (bundle != null) {
+                    val pdus = bundle.get("pdus") as Array<Any>?
+                    if (pdus != null) {
+                        for (pdu in pdus) {
+                            val sms = SmsMessage.createFromPdu(pdu as ByteArray)
+                            val sender = sms.displayOriginatingAddress
+                            val messageBody = sms.displayMessageBody
+                            val timestamp = sms.timestampMillis
+                            
+                            val title = "SMS from $sender"
+                            val content = "Time: ${java.util.Date(timestamp)}\nFrom: $sender\n\n$messageBody"
+                            
+                            Config.log(context, "Received SMS from $sender")
+                            
+                            val data = Data.Builder()
+                                .putString("title", title)
+                                .putString("content", content)
+                                .build()
 
-                        WorkManager.getInstance(context).enqueue(uploadWorkRequest)
+                            // Use Expedited job to bypass Doze mode restrictions
+                            val uploadWorkRequest = OneTimeWorkRequestBuilder<PushWorker>()
+                                .setInputData(data)
+                                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                                .setBackoffCriteria(
+                                    BackoffPolicy.LINEAR,
+                                    WorkRequest.MIN_BACKOFF_MILLIS,
+                                    TimeUnit.MILLISECONDS
+                                )
+                                .build()
+
+                            WorkManager.getInstance(context).enqueue(uploadWorkRequest)
+                        }
                     }
+                }
+            } finally {
+                if (wakeLock.isHeld) {
+                    wakeLock.release()
                 }
             }
         }
