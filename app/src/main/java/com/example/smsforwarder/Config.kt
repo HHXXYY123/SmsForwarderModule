@@ -1,9 +1,12 @@
 package com.example.smsforwarder
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 
 object Config {
+    const val ACTION_LOG_UPDATED = "com.example.smsforwarder.LOG_UPDATED"
+    
     private const val PREF_NAME = "SmsForwarderConfig"
     private const val KEY_TOKEN = "pushplus_token"
     private const val KEY_ENABLED = "service_enabled"
@@ -66,6 +69,11 @@ object Config {
         }
         
         prefs.edit().putString(KEY_LAST_LOG, logList.joinToString("\n")).apply()
+        
+        // 发送广播通知 UI 更新
+        val intent = Intent(ACTION_LOG_UPDATED)
+        intent.setPackage(context.packageName)
+        context.sendBroadcast(intent)
     }
 
     fun getLastLog(context: Context): String {

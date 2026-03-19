@@ -20,11 +20,11 @@ class PushWorker(appContext: Context, workerParams: WorkerParameters) :
         val token = Config.getToken(applicationContext)
 
         if (token.isNullOrEmpty()) {
-            Config.log(applicationContext, "Error: Token is empty")
+            Config.log(applicationContext, "❌ 推送失败: Token 为空")
             return Result.failure()
         }
 
-        Config.log(applicationContext, "Sending: $title")
+        Config.log(applicationContext, "正在发送推送...")
 
         val client = OkHttpClient()
         val json = JSONObject()

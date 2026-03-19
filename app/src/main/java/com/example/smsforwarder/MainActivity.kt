@@ -1,8 +1,10 @@
 package com.example.smsforwarder
 
 import android.Manifest
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -29,6 +31,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var switchService: Switch
     private lateinit var tvStatus: TextView
     private lateinit var tvLog: TextView
+
+    private val logReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == Config.ACTION_LOG_UPDATED) {
+                refreshLogs()
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -193,6 +203,21 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         refreshLogs()
+        val filter = IntentFilter(Config.ACTION_LOG_UPDATED)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(logReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            registerReceiver(logReceiver, filter)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        try {
+            unregisterReceiver(logReceiver)
+        } catch (e: Exception) {
+            // Ignore
+        }
     }
     
     private fun refreshLogs() {

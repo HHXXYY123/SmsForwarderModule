@@ -18,7 +18,7 @@ class SmsReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == "android.provider.Telephony.SMS_RECEIVED") {
             if (!Config.isEnabled(context)) {
-                Config.log(context, "Received SMS but service disabled")
+                Config.log(context, "收到短信，但服务未开启")
                 return
             }
 
