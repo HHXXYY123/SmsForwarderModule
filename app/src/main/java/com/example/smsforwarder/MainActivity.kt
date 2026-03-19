@@ -112,6 +112,9 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             
+            Config.log(this, "手动触发测试推送...")
+            refreshLogs()
+            
             val data = Data.Builder()
                 .putString("title", "测试消息")
                 .putString("content", "这是一条来自短信转发助手的测试消息")
@@ -189,6 +192,10 @@ class MainActivity : AppCompatActivity() {
     
     override fun onResume() {
         super.onResume()
+        refreshLogs()
+    }
+    
+    private fun refreshLogs() {
         tvLog.text = Config.getLastLog(this)
     }
 }

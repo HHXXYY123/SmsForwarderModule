@@ -2,6 +2,7 @@
     <string name="app_name">短信转发助手</string>
     <string name="pushplus_token_label">PushPlus Token (令牌)</string>
     <string name="pushplus_token_hint">在此输入您的 PushPlus Token</string>
+    <string name="template_help">可用变量:\n{sender} - 发件人号码\n{time} - 接收时间\n{content} - 短信正文</string>
     <string name="title_template_label">标题模板</string>
     <string name="title_template_hint">例如: 短信转发：{sender}</string>
     <string name="content_template_label">内容模板</string>

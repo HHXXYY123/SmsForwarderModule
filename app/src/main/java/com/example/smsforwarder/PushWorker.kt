@@ -43,16 +43,21 @@ class PushWorker(appContext: Context, workerParams: WorkerParameters) :
 
         return try {
             val response = client.newCall(request).execute()
+            val responseBody = response.body?.string() ?: ""
+            
             if (response.isSuccessful) {
-                Config.log(applicationContext, "Success: Push sent")
+                Config.log(applicationContext, "✅ 推送成功: $title")
                 Result.success()
             } else {
-                Config.log(applicationContext, "Error: HTTP ${response.code}")
+                Config.log(applicationContext, "❌ 推送失败: HTTP ${response.code} - $responseBody")
                 Result.retry() // Retry on server error
             }
         } catch (e: IOException) {
-            Config.log(applicationContext, "Exception: ${e.message}")
+            Config.log(applicationContext, "⚠️ 网络异常: ${e.message}")
             Result.retry() // Retry on network error
+        } catch (e: Exception) {
+            Config.log(applicationContext, "❌ 未知错误: ${e.message}")
+            Result.failure()
         }
     }
 }

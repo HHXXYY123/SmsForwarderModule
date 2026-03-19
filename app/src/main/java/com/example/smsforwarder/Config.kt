@@ -50,13 +50,26 @@ object Config {
         getPrefs(context).edit().putString(KEY_CONTENT_TEMPLATE, template).apply()
     }
 
+    @Synchronized
     fun log(context: Context, message: String) {
         val timestamp = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date())
-        val logMsg = "[$timestamp] $message"
-        getPrefs(context).edit().putString(KEY_LAST_LOG, logMsg).apply()
+        val newLog = "[$timestamp] $message"
+        
+        val prefs = getPrefs(context)
+        var logs = prefs.getString(KEY_LAST_LOG, "") ?: ""
+        
+        // 保留最近的 10 条日志
+        val logList = logs.split("\n").filter { it.isNotBlank() }.toMutableList()
+        logList.add(0, newLog)
+        if (logList.size > 10) {
+            logList.removeAt(logList.size - 1)
+        }
+        
+        prefs.edit().putString(KEY_LAST_LOG, logList.joinToString("\n")).apply()
     }
 
     fun getLastLog(context: Context): String {
-        return getPrefs(context).getString(KEY_LAST_LOG, "No logs yet") ?: "No logs yet"
+        val logs = getPrefs(context).getString(KEY_LAST_LOG, "暂无日志") ?: "暂无日志"
+        return if (logs.isBlank()) "暂无日志" else logs
     }
 }
