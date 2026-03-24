@@ -2,6 +2,12 @@
     <string name="app_name">短信转发助手</string>
     <string name="pushplus_token_label">PushPlus Token (令牌)</string>
     <string name="pushplus_token_hint">在此输入您的 PushPlus Token</string>
+    <string name="pushplus_topic_label">群组编号 (Topic)</string>
+    <string name="pushplus_topic_hint">选填: 一对多推送群组编号</string>
+    <string name="pushplus_channel_label">推送渠道 (Channel)</string>
+    <string name="pushplus_channel_hint">默认: wechat (可选: webhook, cp, mail)</string>
+    <string name="pushplus_template_label">消息模板格式 (Template)</string>
+    <string name="pushplus_template_hint">默认: html (可选: txt, json, markdown)</string>
     <string name="template_help">可用变量:\n{sender} - 发件人号码\n{time} - 接收时间\n{content} - 短信正文</string>
     <string name="title_template_label">标题模板</string>
     <string name="title_template_hint">例如: 短信转发：{sender}</string>

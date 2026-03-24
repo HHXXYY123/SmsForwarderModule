@@ -18,6 +18,9 @@ class PushWorker(appContext: Context, workerParams: WorkerParameters) :
         val title = inputData.getString("title") ?: "SMS Forwarder"
         val content = inputData.getString("content") ?: "No content"
         val token = Config.getToken(applicationContext)
+        val topic = Config.getTopic(applicationContext)
+        val channel = Config.getChannel(applicationContext)
+        val template = Config.getTemplate(applicationContext)
 
         if (token.isNullOrEmpty()) {
             Config.log(applicationContext, "❌ 推送失败: Token 为空")
@@ -27,11 +30,19 @@ class PushWorker(appContext: Context, workerParams: WorkerParameters) :
         Config.log(applicationContext, "正在发送推送...")
 
         val client = OkHttpClient()
+        
         val json = JSONObject()
         json.put("token", token)
         json.put("title", title)
         json.put("content", content)
-        json.put("template", "html") 
+        json.put("template", template)
+        
+        if (topic.isNotEmpty()) {
+            json.put("topic", topic)
+        }
+        if (channel.isNotEmpty()) {
+            json.put("channel", channel)
+        } 
 
         val mediaType = "application/json; charset=utf-8".toMediaType()
         val body = json.toString().toRequestBody(mediaType)

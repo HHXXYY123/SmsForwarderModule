@@ -9,6 +9,9 @@ object Config {
     
     private const val PREF_NAME = "SmsForwarderConfig"
     private const val KEY_TOKEN = "pushplus_token"
+    private const val KEY_TOPIC = "pushplus_topic"
+    private const val KEY_CHANNEL = "pushplus_channel"
+    private const val KEY_TEMPLATE = "pushplus_template"
     private const val KEY_ENABLED = "service_enabled"
     private const val KEY_LAST_LOG = "last_log"
     private const val KEY_TITLE_TEMPLATE = "title_template"
@@ -27,6 +30,30 @@ object Config {
 
     fun setToken(context: Context, token: String) {
         getPrefs(context).edit().putString(KEY_TOKEN, token).apply()
+    }
+
+    fun getTopic(context: Context): String {
+        return getPrefs(context).getString(KEY_TOPIC, "") ?: ""
+    }
+
+    fun setTopic(context: Context, topic: String) {
+        getPrefs(context).edit().putString(KEY_TOPIC, topic).apply()
+    }
+
+    fun getChannel(context: Context): String {
+        return getPrefs(context).getString(KEY_CHANNEL, "wechat") ?: "wechat"
+    }
+
+    fun setChannel(context: Context, channel: String) {
+        getPrefs(context).edit().putString(KEY_CHANNEL, channel).apply()
+    }
+
+    fun getTemplate(context: Context): String {
+        return getPrefs(context).getString(KEY_TEMPLATE, "html") ?: "html"
+    }
+
+    fun setTemplate(context: Context, template: String) {
+        getPrefs(context).edit().putString(KEY_TEMPLATE, template).apply()
     }
 
     fun isEnabled(context: Context): Boolean {

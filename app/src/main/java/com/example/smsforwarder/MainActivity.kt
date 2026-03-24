@@ -26,6 +26,9 @@ import androidx.work.Data
 class MainActivity : AppCompatActivity() {
 
     private lateinit var etToken: EditText
+    private lateinit var etTopic: EditText
+    private lateinit var etChannel: EditText
+    private lateinit var etTemplate: EditText
     private lateinit var etTitleTemplate: EditText
     private lateinit var etContentTemplate: EditText
     private lateinit var switchService: Switch
@@ -45,6 +48,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         etToken = findViewById(R.id.et_token)
+        etTopic = findViewById(R.id.et_topic)
+        etChannel = findViewById(R.id.et_channel)
+        etTemplate = findViewById(R.id.et_template)
         etTitleTemplate = findViewById(R.id.et_title_template)
         etContentTemplate = findViewById(R.id.et_content_template)
         switchService = findViewById(R.id.switch_service)
@@ -56,6 +62,9 @@ class MainActivity : AppCompatActivity() {
 
         // Load config
         etToken.setText(Config.getToken(this))
+        etTopic.setText(Config.getTopic(this))
+        etChannel.setText(Config.getChannel(this))
+        etTemplate.setText(Config.getTemplate(this))
         etTitleTemplate.setText(Config.getTitleTemplate(this))
         etContentTemplate.setText(Config.getContentTemplate(this))
         val isEnabled = Config.isEnabled(this)
@@ -81,6 +90,9 @@ class MainActivity : AppCompatActivity() {
 
         btnSave.setOnClickListener {
             val token = etToken.text.toString().trim()
+            val topic = etTopic.text.toString().trim()
+            val channel = etChannel.text.toString().trim().ifEmpty { "wechat" }
+            val template = etTemplate.text.toString().trim().ifEmpty { "html" }
             val titleTemplate = etTitleTemplate.text.toString().trim()
             val contentTemplate = etContentTemplate.text.toString().trim()
             
@@ -89,11 +101,14 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             if (titleTemplate.isEmpty() || contentTemplate.isEmpty()) {
-                Toast.makeText(this, "模板不能为空", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "短信模板不能为空", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             
             Config.setToken(this, token)
+            Config.setTopic(this, topic)
+            Config.setChannel(this, channel)
+            Config.setTemplate(this, template)
             Config.setTitleTemplate(this, titleTemplate)
             Config.setContentTemplate(this, contentTemplate)
             Toast.makeText(this, "配置已保存", Toast.LENGTH_SHORT).show()
